@@ -241,6 +241,9 @@ def save_numerics(
     to_hours = lambda x: max(0, x.days*24 + x.seconds // 3600)
 
     X = X.set_index('icustay_id').join(data[['intime']])
+    ### DEBUGGUNG STARTS HERE ###
+    print('### SAVING X_orig ###')
+    X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_orig')
     X['hours_in'] = (X['charttime'] - X['intime']).apply(to_hours)
 
     X.drop(columns=['charttime', 'intime'], inplace=True)
@@ -847,6 +850,7 @@ if __name__ == '__main__':
 
     #############
     # If there is numerics extraction
+    # This is where vitals are extracted.
     X = None
     if (args['extract_numerics'] == 0 | (args['extract_numerics'] == 1) ) & isfile(os.path.join(outPath, dynamic_hd5_filename)):
         print("Reloading X from %s" % os.path.join(outPath, dynamic_hd5_filename))
