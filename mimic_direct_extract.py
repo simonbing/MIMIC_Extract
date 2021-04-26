@@ -13,7 +13,7 @@ import numpy.random as npr
 
 import spacy
 # TODO(mmd): Upgrade to python 3 and use scispacy (requires python 3.6)
-import scispacy
+# import scispacy # Never actually used and installation is a headache.
 
 import matplotlib
 matplotlib.use('Agg')
