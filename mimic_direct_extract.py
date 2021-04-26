@@ -238,7 +238,8 @@ def save_numerics(
     X['value'] = pd.to_numeric(X['value'], 'coerce')
     X.astype({k: int for k in ID_COLS}, inplace=True)
 
-    to_hours = lambda x: max(0, x.days*24 + x.seconds // 3600)
+    # to_hours = lambda x: max(0, x.days*24 + x.seconds // 3600)
+    to_hours = lambda x: max(0, x.days * 24 + x.seconds // 60) # This is actually to minutes. DEBUG
 
     X = X.set_index('icustay_id').join(data[['intime']])
     ### DEBUGGUNG STARTS HERE ###
