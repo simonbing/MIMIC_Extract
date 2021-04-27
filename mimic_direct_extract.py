@@ -266,11 +266,9 @@ def save_numerics(
     X.columns = X.columns.droplevel(0)
     X.columns.names = ['Aggregation Function']
 
-    X.to_hdf(
-        '/home/sbing/datasets/mimic_extract/debug_original_time/X_itemid.h5',
-        'X_itemid')
+    # data['max_hours'] = (data['outtime'] - data['intime']).apply(to_hours)
+    data['max_hours'] = (data['outtime'] - data['intime'])
 
-    data['max_hours'] = (data['outtime'] - data['intime']).apply(to_hours)
 
     # TODO(mmd): Maybe can just create the index directly?
     missing_hours_fill = range_unnest(data, 'max_hours', out_col_name='hours_in', reset_index=True)
@@ -301,6 +299,10 @@ def save_numerics(
     #    X.columms = X.MultiIndex.from_frame(X[ITEM_COLS])
 
     X = X.sort_index(axis=0).sort_index(axis=1)
+
+    X.to_hdf(
+        '/home/sbing/datasets/mimic_extract/debug_original_time/X_itemid.h5',
+        'X_itemid')
 
     print("Shape of X : ", X.shape)
 
