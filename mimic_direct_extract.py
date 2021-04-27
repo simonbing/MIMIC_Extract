@@ -246,13 +246,12 @@ def save_numerics(
     print('### SAVING X_orig ###')
     X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_orig.h5', 'X_orig')
     # X['hours_in'] = (X['charttime'] - X['intime']).apply(to_hours)
+    X['hours_in'] = (X['charttime'] - X['intime'])
     # X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_hours.h5',
     #          'X_hours')
 
     # X.drop(columns=['charttime', 'intime'], inplace=True)
     X.set_index('itemid', append=True, inplace=True)
-    X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_itemid.h5',
-             'X_itemid')
 
     # Pandas has a bug with the below for small X
     #X = X.join([var_map, I]).set_index(['label', 'LEVEL1', 'LEVEL2'], append=True)
@@ -266,6 +265,10 @@ def save_numerics(
     X = X.groupby(ID_COLS + group_item_cols + ['hours_in']).agg(['mean', 'std', 'count'])
     X.columns = X.columns.droplevel(0)
     X.columns.names = ['Aggregation Function']
+
+    X.to_hdf(
+        '/home/sbing/datasets/mimic_extract/debug_original_time/X_itemid.h5',
+        'X_itemid')
 
     data['max_hours'] = (data['outtime'] - data['intime']).apply(to_hours)
 
