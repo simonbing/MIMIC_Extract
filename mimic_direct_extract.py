@@ -251,7 +251,7 @@ def save_numerics(
 
     # X.drop(columns=['charttime', 'intime'], inplace=True)
     X.set_index('itemid', append=True, inplace=True)
-    X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_hours.h5',
+    X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_itemid.h5',
              'X_itemid')
 
     # Pandas has a bug with the below for small X
