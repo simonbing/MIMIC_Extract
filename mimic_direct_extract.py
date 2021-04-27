@@ -245,12 +245,14 @@ def save_numerics(
     ### DEBUGGUNG STARTS HERE ###
     print('### SAVING X_orig ###')
     X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_orig.h5', 'X_orig')
-    X['hours_in'] = (X['charttime'] - X['intime']).apply(to_hours)
-    X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_hours.h5',
-             'X_hours')
+    # X['hours_in'] = (X['charttime'] - X['intime']).apply(to_hours)
+    # X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_hours.h5',
+    #          'X_hours')
 
-    X.drop(columns=['charttime', 'intime'], inplace=True)
+    # X.drop(columns=['charttime', 'intime'], inplace=True)
     X.set_index('itemid', append=True, inplace=True)
+    X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_hours.h5',
+             'X_itemid')
 
     # Pandas has a bug with the below for small X
     #X = X.join([var_map, I]).set_index(['label', 'LEVEL1', 'LEVEL2'], append=True)
