@@ -413,7 +413,7 @@ def save_icd9_codes(codes, outPath, codes_h5_filename):
 
 def save_outcome(
     data, querier, outPath, outcome_filename, outcome_hd5_filename,
-    outcome_columns_filename, outcome_schema, host=None
+    outcome_columns_filename, outcome_schema, time_step, host=None
 ):
     """ Retrieve outcomes from DB and save to disk
 
@@ -433,7 +433,7 @@ def save_outcome(
     data['intime'] = pd.to_datetime(data['intime']) #, format="%m/%d/%Y"))
     data['outtime'] = pd.to_datetime(data['outtime'])
     icustay_timediff_tmp = data['outtime'] - data['intime']
-    icustay_timediff = pd.Series([timediff.days*24 + timediff.seconds//3600
+    icustay_timediff = pd.Series([(timediff.days*24*60*60 + timediff.seconds)//(60 * time_step)
                                   for timediff in icustay_timediff_tmp], index=data.index.values)
     query = """
     select i.subject_id, i.hadm_id, v.icustay_id, v.ventnum, v.starttime, v.endtime
@@ -972,7 +972,7 @@ if __name__ == '__main__':
         print("Saving Outcomes...")
         Y = save_outcome(
             data, querier, outPath, outcome_filename, outcome_hd5_filename,
-            outcome_columns_filename, outcome_data_schema, host=args['psql_host'],
+            outcome_columns_filename, outcome_data_schema, time_step=args['time_step'], host=args['psql_host'],
         )
 
 
