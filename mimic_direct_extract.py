@@ -238,19 +238,19 @@ def save_numerics(
     X['value'] = pd.to_numeric(X['value'], 'coerce')
     X.astype({k: int for k in ID_COLS}, inplace=True)
 
-    # to_hours = lambda x: max(0, x.days*24 + x.seconds // 3600)
-    to_hours = lambda x: max(0, x.days * 24 + x.seconds // 60) # This is actually to minutes. DEBUG
+    to_hours = lambda x: max(0, x.days*24 + x.seconds // 3600)
+    # to_hours = lambda x: max(0, x.days * 24 + x.seconds // 60) # This is actually to minutes. DEBUG
 
     X = X.set_index('icustay_id').join(data[['intime']])
     ### DEBUGGUNG STARTS HERE ###
-    print('### SAVING X_orig ###')
-    X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_orig.h5', 'X_orig')
-    # X['hours_in'] = (X['charttime'] - X['intime']).apply(to_hours)
-    X['hours_in'] = (X['charttime'] - X['intime'])
+    # print('### SAVING X_orig ###')
+    # X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_orig.h5', 'X_orig')
+    X['hours_in'] = (X['charttime'] - X['intime']).apply(to_hours)
+    # X['hours_in'] = (X['charttime'] - X['intime'])
     # X.to_hdf('/home/sbing/datasets/mimic_extract/debug_original_time/X_hours.h5',
     #          'X_hours')
 
-    # X.drop(columns=['charttime', 'intime'], inplace=True)
+    X.drop(columns=['charttime', 'intime'], inplace=True)
     X.set_index('itemid', append=True, inplace=True)
 
     # Pandas has a bug with the below for small X
@@ -266,8 +266,8 @@ def save_numerics(
     X.columns = X.columns.droplevel(0)
     X.columns.names = ['Aggregation Function']
 
-    # data['max_hours'] = (data['outtime'] - data['intime']).apply(to_hours)
-    data['max_hours'] = (data['outtime'] - data['intime'])
+    data['max_hours'] = (data['outtime'] - data['intime']).apply(to_hours)
+    # data['max_hours'] = (data['outtime'] - data['intime'])
 
 
     # TODO(mmd): Maybe can just create the index directly?
@@ -300,9 +300,9 @@ def save_numerics(
 
     X = X.sort_index(axis=0).sort_index(axis=1)
 
-    X.to_hdf(
-        '/home/sbing/datasets/mimic_extract/debug_original_time/X_itemid.h5',
-        'X_itemid')
+    # X.to_hdf(
+    #     '/home/sbing/datasets/mimic_extract/debug_original_time/X_itemid.h5',
+    #     'X_itemid')
 
     print("Shape of X : ", X.shape)
 
