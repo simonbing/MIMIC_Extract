@@ -225,7 +225,7 @@ def range_unnest(df, col, out_col_name=None, reset_index=False):
 # TODO(mmd): improve args
 def save_numerics(
     data, X, I, var_map, var_ranges, outPath, dynamic_filename, columns_filename, subjects_filename,
-    times_filename, dynamic_hd5_filename, group_by_level2, apply_var_limit, min_percent
+    times_filename, dynamic_hd5_filename, group_by_level2, apply_var_limit, min_percent, time_step
 ):
     assert len(data) > 0 and len(X) > 0, "Must provide some input data to process."
 
@@ -769,6 +769,9 @@ if __name__ == '__main__':
                     help='Minimum hours of stay to be included')
     ap.add_argument('--max_duration', type=int, default=240,
                     help='Maximum hours of stay to be included')
+    # New flags
+    ap.add_argument('--time_step', type=int, default=60,
+                    help='Sampling interval in minutes. Default is one hour.')
 
     #############
     # Parse args
@@ -796,22 +799,24 @@ if __name__ == '__main__':
 
 
     # Modify the filenames
-    if args['pop_size'] > 0:
+    if args['pop_size'] == 0:
+        pop_size = 'all'
+    elif args['pop_size'] > 0:
         pop_size = str(args['pop_size'])
 
-        static_filename = splitext(static_filename)[0] + '_' + pop_size + splitext(static_filename)[1]
-        dynamic_filename = splitext(dynamic_filename)[0] + '_' + pop_size + splitext(dynamic_filename)[1]
-        #columns_filename = splitext(columns_filename)[0] + '_' + pop_size + splitext(columns_filename)[1]
-        subjects_filename = splitext(subjects_filename)[0] + '_' + pop_size + splitext(subjects_filename)[1]
-        times_filename = splitext(times_filename)[0] + '_' + pop_size + splitext(times_filename)[1]
-        dynamic_hd5_filename = splitext(dynamic_hd5_filename)[0] + '_' + pop_size + splitext(dynamic_hd5_filename)[1]
-        outcome_filename = splitext(outcome_filename)[0] + '_' + pop_size + splitext(outcome_filename)[1]
-        dynamic_hd5_filt_filename = splitext(dynamic_hd5_filt_filename)[0] + '_' + pop_size + splitext(dynamic_hd5_filt_filename)[1]
-        outcome_hd5_filename = splitext(outcome_hd5_filename)[0] + '_' + pop_size + splitext(outcome_hd5_filename)[1]
-        #outcome_columns_filename = splitext(outcome_columns_filename)[0] + '_' + pop_size + splitext(outcome_columns_filename)[1]
-        codes_hd5_filename = splitext(codes_hd5_filename)[0] + '_' + pop_size + splitext(codes_hd5_filename)[1]
-        notes_hd5_filename = splitext(notes_hd5_filename)[0] + '_' + pop_size + splitext(notes_hd5_filename)[1]
-        idx_hd5_filename = splitext(idx_hd5_filename)[0] + '_' + pop_size + splitext(idx_hd5_filename)[1]
+    static_filename = splitext(static_filename)[0] + '_' + pop_size + splitext(static_filename)[1]
+    dynamic_filename = splitext(dynamic_filename)[0] + '_' + F"{args['time_step']}_mins" + '_' + pop_size + splitext(dynamic_filename)[1]
+    #columns_filename = splitext(columns_filename)[0] + '_' + pop_size + splitext(columns_filename)[1]
+    subjects_filename = splitext(subjects_filename)[0] + '_' + pop_size + splitext(subjects_filename)[1]
+    times_filename = splitext(times_filename)[0] + '_' + pop_size + splitext(times_filename)[1]
+    dynamic_hd5_filename = splitext(dynamic_hd5_filename)[0] + '_' + pop_size + splitext(dynamic_hd5_filename)[1]
+    outcome_filename = splitext(outcome_filename)[0] + '_' + pop_size + splitext(outcome_filename)[1]
+    dynamic_hd5_filt_filename = splitext(dynamic_hd5_filt_filename)[0] + '_' + pop_size + splitext(dynamic_hd5_filt_filename)[1]
+    outcome_hd5_filename = splitext(outcome_hd5_filename)[0] + '_' + pop_size + splitext(outcome_hd5_filename)[1]
+    #outcome_columns_filename = splitext(outcome_columns_filename)[0] + '_' + pop_size + splitext(outcome_columns_filename)[1]
+    codes_hd5_filename = splitext(codes_hd5_filename)[0] + '_' + pop_size + splitext(codes_hd5_filename)[1]
+    notes_hd5_filename = splitext(notes_hd5_filename)[0] + '_' + pop_size + splitext(notes_hd5_filename)[1]
+    idx_hd5_filename = splitext(idx_hd5_filename)[0] + '_' + pop_size + splitext(idx_hd5_filename)[1]
 
     dbname = args['psql_dbname']
     schema_name = args['psql_schema_name']
@@ -933,7 +938,7 @@ if __name__ == '__main__':
         X = save_numerics(
             data, X, I, var_map, var_ranges, outPath, dynamic_filename, columns_filename, subjects_filename,
             times_filename, dynamic_hd5_filename, group_by_level2=args['group_by_level2'], apply_var_limit=args['var_limits'],
-            min_percent=args['min_percent']
+            min_percent=args['min_percent'], time_step=args['time_step']
         )
 
     if X is None: print("SKIPPED vitals_hourly_data")
