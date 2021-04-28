@@ -162,3 +162,7 @@ To do this, just set the POP_SIZE environmental variable. For example, to build 
     * `ALTER TABLE code_status SET SCHEMA mimiciii;`
     * `GRANT SELECT ON mimiciii.code_status TO [USER];`
     Note that you'll need to run these on _every_ concepts table accessed by the script.
+    
+# MedGen Extensions
+(Simon Bing, ETHZ, 2021)
+TODO: add instructions for running with additional flags and problems i encountered during installation.
